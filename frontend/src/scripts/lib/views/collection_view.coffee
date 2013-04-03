@@ -1,6 +1,6 @@
-{View} = require 'chaplin'
+{CollectionView} = require 'chaplin'
 
-module.exports = class View extends View
+module.exports = class CollectionView extends CollectionView
 
   # Default the container to be the body.
   container: 'body'

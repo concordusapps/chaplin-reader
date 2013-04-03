@@ -1,5 +1,16 @@
+path = require 'path'
+
 module.exports = (grunt) ->
   'use strict'
+
+  # Settings
+  # ========
+
+  # Base directory
+  # --------------
+  # Set this to where you're directory structure is
+  # based on.
+  baseDirectory = 'frontend'
 
   # Server
   # ======
@@ -15,6 +26,12 @@ module.exports = (grunt) ->
   # You could this to your IP address to expose it over a local intranet.
   hostname = 'localhost'
 
+  # Router
+  # ------
+  router = {}
+  router["#{ hostname }/api"] = "#{ hostname }:8000/"
+  router[hostname] = "#{ hostname }:#{ 3501 + portOffset }"
+
   # Configuration
   # =============
   grunt.initConfig
@@ -23,8 +40,8 @@ module.exports = (grunt) ->
     # -------
     clean:
       all: [
-        'build',
-        'temp'
+        "#{ baseDirectory }/build",
+        "#{ baseDirectory }/temp"
       ]
 
     # File management
@@ -37,8 +54,8 @@ module.exports = (grunt) ->
         files: [
           expand: true
           filter: 'isFile'
-          cwd: 'temp/scripts-amd'
-          dest: 'temp/scripts'
+          cwd: "#{ baseDirectory }/temp/scripts-amd"
+          dest: "#{ baseDirectory }/temp/scripts"
           src: [
             '**/*'
             '!main.js'
@@ -54,8 +71,8 @@ module.exports = (grunt) ->
         files: [
           expand: true
           filter: 'isFile'
-          cwd: 'src/scripts'
-          dest: 'temp/scripts'
+          cwd: "#{ baseDirectory }/src/scripts"
+          dest: "#{ baseDirectory }/temp/scripts"
           src: '**/*.coffee'
           ext: '.js'
         ]
@@ -80,8 +97,8 @@ module.exports = (grunt) ->
         files: [
           expand: true
           filter: 'isFile'
-          cwd: 'src/templates'
-          dest: 'temp/scripts/templates'
+          cwd: "#{ baseDirectory }/src/templates"
+          dest: "#{ baseDirectory }/temp/scripts/templates"
           src: '**/*.haml'
           ext: '.js'
         ]
@@ -89,15 +106,26 @@ module.exports = (grunt) ->
         options:
           target: 'js'
 
-      'temp/index.html': 'src/index.haml'
+      index:
+        dest: "#{ baseDirectory }/temp/index.html"
+        src: "#{ baseDirectory }/src/index.haml"
+
+    # Stylesheets
+    # -----------
+    sass:
+      compile:
+        dest: "#{ baseDirectory }/temp/styles/main.css"
+        src: "#{ baseDirectory }/src/styles/main.scss"
+        options:
+          loadPath: require('path').join(__dirname, 'frontend', 'temp')
 
     # Bundle conversion
     # -----------------
     urequire:
       convert:
         template: 'AMD'
-        bundlePath: 'temp/scripts/'
-        outputPath: 'temp/scripts-amd/'
+        bundlePath: "#{ baseDirectory }/temp/scripts/"
+        outputPath: "#{ baseDirectory }/temp/scripts-amd/"
 
     # LiveReload
     # ----------
@@ -111,7 +139,7 @@ module.exports = (grunt) ->
         port: 3501 + portOffset
         hostname: hostname
         middleware: (connect, options) -> [
-          require('connect-url-rewrite') ['^([^.]+)$ /']
+          require('connect-url-rewrite') ['^[^.]*?\\?.*?$ /']
           require('grunt-contrib-livereload/lib/utils').livereloadSnippet
           connect.static options.base
         ]
@@ -119,30 +147,38 @@ module.exports = (grunt) ->
       build:
         options:
           keepalive: true
-          base: 'build'
+          base: "#{ baseDirectory }/build"
 
       temp:
         options:
-          base: 'temp'
+          base: "#{ baseDirectory }/temp"
+
+    # Proxy
+    # -----
+    proxy:
+      serve:
+        options:
+          port: 4501 + portOffset
+          router: router
 
     # Watcher
     # -------
     regarde:
       coffee:
-        files: 'src/scripts/**/*.coffee'
+        files: "#{ baseDirectory }/src/scripts/**/*.coffee"
         tasks: ['script', 'livereload']
 
       haml:
-        files: 'src/templates/**/*.haml'
+        files: "#{ baseDirectory }/src/templates/**/*.haml"
         tasks: ['haml:compile', 'livereload']
 
       index:
-        files: 'src/index.haml'
+        files: "#{ baseDirectory }/src/index.haml"
         tasks: ['haml:index', 'livereload']
 
-      # sass:
-      #   files: 'src/styles/**/*.scss'
-      #   tasks: ['sass:compile', 'livereload']
+      sass:
+        files: "#{ baseDirectory }/src/styles/**/*.scss"
+        tasks: ['sass:compile', 'livereload']
 
   # Dependencies
   # ============
@@ -173,6 +209,8 @@ module.exports = (grunt) ->
     'livereload-start'
     'script'
     'haml'
+    'sass'
     'connect:temp'
+    'proxy'
     'regarde'
   ]

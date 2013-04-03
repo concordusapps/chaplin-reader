@@ -1,0 +1,28 @@
+#entries {
+  ul.items {
+    font-size: 10pt;
+    padding: 0;
+    margin: 0;
+    > li {
+      list-style-type: none;
+      padding: 0.8em;
+      border-bottom: 1px solid rgb(220, 220, 220);
+      &:active {
+        background: rgb(245, 245, 245);
+      }
+      .title {
+        font-size: 11pt;
+      }
+      .subtitle {
+        font-size: 9pt;
+        font-style: italic;
+        color: rgb(80, 80, 80);
+      }
+      .published {
+        font-size: 9pt;
+        margin-top: 0.35em;
+        color: rgb(140, 140, 140);
+      }
+    }
+  }
+}

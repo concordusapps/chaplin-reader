@@ -2,13 +2,10 @@
 /node_modules
 
 # Temporary directory where files are built.
-/temp
+/frontend/temp
 
 # Final directory where the complete distributable project is placed.
-/build
-
-# Directory that bower stores downloaded components.
-/components
+/frontend/build
 
 # Generated from compiling SASS to CSS.
 /.sass-cache

@@ -1,0 +1,21 @@
+#entry {
+  font-size: 10pt;
+  padding: 0.8em;
+  margin: 0;
+  .title {
+    font-size: 11pt;
+  }
+  a {
+    display: block;
+    margin-bottom: 0.25em;
+  }
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+  .published {
+    font-size: 9pt;
+    margin: 0.35em 0;
+    color: rgb(140, 140, 140);
+  }
+}
