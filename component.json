@@ -1,0 +1,11 @@
+{
+  "name": "composer-example",
+  "version": "0.2.0",
+  "dependencies": {
+    "chaplin": "0.8.x",
+    "jquery": "1.9.x",
+    "underscore": "1.4.x",
+    "requirejs": "2.1.x",
+    "moment": "2.0.x"
+  }
+}
